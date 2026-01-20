@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # PaySecure - Microsistema de Pago y Facturación
 
 Un sistema completo de procesamiento de pagos y facturación con diseño moderno y elegante, construido con Flask.
@@ -307,3 +308,7 @@ Este proyecto es de código abierto y está disponible para uso educativo y come
 **PaySecure** - Microsistema de Pagos y Facturación
  2026 - Todos los derechos reservados
 # MU
+=======
+# MU
+Sistema de Gestion de Pagos y Facturacion
+>>>>>>> 99ab4ffeaea040c6e8f160bd3490fa846f7bec73
