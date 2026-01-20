@@ -1,0 +1,541 @@
+/* Custom Styles for PaySecure */
+
+/* Global Styles */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #fafafa;
+    color: #2c3e50;
+    line-height: 1.6;
+}
+
+/* Navigation */
+.nav-link {
+    @apply text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200;
+}
+
+.nav-link:hover {
+    @apply bg-white bg-opacity-10;
+}
+
+.nav-link.active {
+    @apply text-accent bg-white bg-opacity-10;
+}
+
+.mobile-nav-link {
+    @apply text-gray-300 hover:text-white hover:bg-white hover:bg-opacity-10 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 block;
+}
+
+.mobile-nav-link.active {
+    @apply text-accent bg-white bg-opacity-10;
+}
+
+/* Alert Messages */
+.alert {
+    @apply px-4 py-3 rounded-lg shadow-lg text-white font-medium flex items-center;
+    animation: slideInRight 0.3s ease-out;
+}
+
+.alert-success {
+    @apply bg-green-600;
+}
+
+.alert-error {
+    @apply bg-red-600;
+}
+
+.alert-warning {
+    @apply bg-yellow-600;
+}
+
+.alert-info {
+    @apply bg-blue-600;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Form Styles */
+.form-group {
+    @apply mb-4;
+}
+
+.form-label {
+    @apply block text-sm font-medium text-charcoal mb-2;
+}
+
+.form-input {
+    @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-200 text-charcoal bg-white;
+}
+
+.form-input:focus {
+    @apply outline-none shadow-lg;
+}
+
+.form-input:disabled {
+    @apply bg-gray-100 cursor-not-allowed;
+}
+
+/* Error Messages */
+.error-message {
+    @apply text-red-600 text-sm mt-1 hidden;
+}
+
+.error-message.show {
+    @apply block;
+}
+
+.form-input.error {
+    @apply border-red-500 focus:ring-red-500;
+}
+
+/* Buttons */
+.btn-primary {
+    @apply bg-accent hover:bg-yellow-500 text-primary font-semibold py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg;
+}
+
+.btn-secondary {
+    @apply bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-105;
+}
+
+.btn-accent {
+    @apply bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-105;
+}
+
+/* Cards and Containers */
+.stat-card {
+    @apply bg-white rounded-2xl shadow-lg border border-gray-200 p-6 transition-all duration-300 hover:shadow-xl;
+}
+
+.action-card {
+    @apply bg-white rounded-2xl shadow-lg border border-gray-200 p-6 text-center transition-all duration-300 hover:shadow-xl hover:-translate-y-2;
+}
+
+/* Status Badges */
+.status-badge {
+    @apply px-2 py-1 rounded-full text-xs font-medium inline-flex items-center;
+}
+
+.status-success {
+    @apply bg-green-100 text-green-800;
+}
+
+.status-error {
+    @apply bg-red-100 text-red-800;
+}
+
+.status-warning {
+    @apply bg-yellow-100 text-yellow-800;
+}
+
+.status-info {
+    @apply bg-blue-100 text-blue-800;
+}
+
+/* Payment Form Styles */
+.payment-form-container {
+    @apply relative;
+}
+
+/* Card Preview Styles */
+.card-preview-container {
+    @apply perspective-1000;
+}
+
+.card-preview {
+    @apply relative w-full max-w-sm mx-auto;
+    height: 220px;
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.card-preview:hover {
+    transform: scale(1.02) rotateY(-2deg) rotateX(2deg);
+}
+
+.card-front {
+    @apply absolute inset-0 w-full h-full rounded-2xl p-6 text-white shadow-2xl;
+    /* Gradiente más suave y claro para mejor contraste */
+    background: linear-gradient(135deg,
+            #4a6fa5 0%,
+            #5b7db1 25%,
+            #8b5fb8 50%,
+            #a166ab 75%,
+            #c084a1 100%);
+    backface-visibility: hidden;
+    transform: rotateY(0deg);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Efecto holográfico sutil */
+.card-front::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg,
+            transparent 30%,
+            rgba(255, 255, 255, 0.1) 50%,
+            transparent 70%);
+    transform: rotate(45deg);
+    animation: shimmer-card 8s infinite;
+}
+
+@keyframes shimmer-card {
+    0% {
+        transform: translateX(-100%) translateY(-100%) rotate(45deg);
+    }
+
+    100% {
+        transform: translateX(100%) translateY(100%) rotate(45deg);
+    }
+}
+
+.card-front:hover {
+    box-shadow:
+        0 30px 60px -12px rgba(0, 0, 0, 0.5),
+        0 18px 36px -18px rgba(0, 0, 0, 0.3),
+        inset 0 -2px 6px rgba(255, 255, 255, 0.2);
+    transform: translateY(-4px);
+}
+
+.card-header {
+    @apply flex justify-between items-center mb-8;
+    position: relative;
+    z-index: 10;
+}
+
+/* Chip realista con efecto 3D */
+.card-chip {
+    width: 50px;
+    height: 40px;
+    @apply bg-gradient-to-br from-yellow-200 via-yellow-400 to-yellow-600 rounded-md flex items-center justify-center relative;
+    box-shadow:
+        0 2px 4px rgba(0, 0, 0, 0.3),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.2),
+        inset 0 2px 4px rgba(255, 255, 255, 0.3);
+}
+
+/* Patrón de chip */
+.card-chip::before {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    background: linear-gradient(135deg,
+            rgba(139, 69, 19, 0.3) 0%,
+            transparent 50%,
+            rgba(139, 69, 19, 0.3) 100%);
+    border-radius: 2px;
+}
+
+/* Líneas del chip */
+.card-chip::after {
+    content: '';
+    position: absolute;
+    width: 70%;
+    height: 70%;
+    background-image:
+        repeating-linear-gradient(90deg,
+            rgba(139, 69, 19, 0.4) 0px,
+            rgba(139, 69, 19, 0.4) 2px,
+            transparent 2px,
+            transparent 6px),
+        repeating-linear-gradient(0deg,
+            rgba(139, 69, 19, 0.4) 0px,
+            rgba(139, 69, 19, 0.4) 2px,
+            transparent 2px,
+            transparent 6px);
+}
+
+.card-logo {
+    @apply text-white;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.card-body {
+    @apply space-y-6;
+    position: relative;
+    z-index: 10;
+}
+
+.card-number {
+    @apply text-2xl font-mono tracking-wider text-center font-semibold;
+    letter-spacing: 0.15em;
+    text-shadow:
+        0 2px 4px rgba(0, 0, 0, 0.4),
+        0 1px 2px rgba(0, 0, 0, 0.6);
+    font-family: 'Courier New', monospace;
+}
+
+.card-info {
+    @apply flex justify-between items-end;
+}
+
+.card-holder,
+.card-expiry {
+    @apply space-y-1;
+}
+
+.card-label {
+    @apply text-xs uppercase opacity-80 font-semibold tracking-wide;
+    font-size: 0.65rem;
+    letter-spacing: 0.05em;
+}
+
+.card-value {
+    @apply text-sm font-semibold uppercase tracking-wide;
+    text-shadow:
+        0 1px 3px rgba(0, 0, 0, 0.5),
+        0 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+/* Animation Classes */
+.fade-in {
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.slide-up {
+    animation: slideUp 0.6s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Loading Spinner */
+.spinner {
+    @apply inline-block w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin;
+}
+
+/* Tooltip */
+[data-tooltip] {
+    @apply relative cursor-help;
+}
+
+[data-tooltip]::before {
+    content: attr(data-tooltip);
+    @apply absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-charcoal text-white text-xs rounded whitespace-nowrap opacity-0 pointer-events-none transition-opacity duration-200;
+}
+
+[data-tooltip]:hover::before {
+    @apply opacity-100;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .card-preview {
+        height: 180px;
+    }
+
+    .card-number {
+        @apply text-lg;
+    }
+
+    .card-chip {
+        @apply w-10 h-8;
+    }
+
+    .stat-card {
+        @apply p-4;
+    }
+
+    .action-card {
+        @apply p-4;
+    }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+    .card-preview {
+        height: 160px;
+    }
+
+    .card-number {
+        @apply text-base;
+    }
+
+    .card-front {
+        @apply p-4;
+    }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    @apply bg-gray-100 rounded;
+}
+
+::-webkit-scrollbar-thumb {
+    @apply bg-gray-400 rounded;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-500;
+}
+
+/* Print Styles */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+
+    .print-only {
+        display: block !important;
+    }
+
+    body {
+        @apply bg-white;
+    }
+
+    .bg-white {
+        @apply shadow-none border-none;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    body {
+        @apply bg-gray-900 text-white;
+    }
+
+    .bg-white {
+        @apply bg-gray-800;
+    }
+
+    .text-charcoal {
+        @apply text-white;
+    }
+
+    .text-slate {
+        @apply text-gray-400;
+    }
+}
+
+/* Focus styles for accessibility */
+:focus-visible {
+    @apply outline-none ring-2 ring-accent ring-offset-2 rounded;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Custom animations */
+@keyframes pulse-glow {
+
+    0%,
+    100% {
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 0 30px rgba(212, 175, 55, 0.6);
+    }
+}
+
+.pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.float {
+    animation: float 3s ease-in-out infinite;
+}
+
+/* Gradient text */
+.gradient-text {
+    @apply bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent;
+}
+
+/* Glass morphism */
+.glass {
+    @apply backdrop-blur-sm bg-white bg-opacity-10 border border-white border-opacity-20;
+}
+
+/* Hover effects */
+.hover-lift {
+    @apply transition-all duration-300;
+}
+
+.hover-lift:hover {
+    @apply transform -translate-y-2 shadow-xl;
+}
+
+/* Loading states */
+.loading {
+    @apply relative overflow-hidden;
+}
+
+.loading::after {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-50;
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+
+    100% {
+        transform: translateX(100%);
+    }
+}

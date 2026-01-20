@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MU - Microsistema de Pagos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #1a2332 0%, #2c3e50 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .logo-icon {
+            width: 80px;
+            height: 80px;
+            background: #d4af37;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #1a2332;
+        }
+
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #d4af37 0%, #f4e4a6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: #b8c5d1;
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .feature {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .feature:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #d4af37;
+        }
+
+        .feature h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature p {
+            color: #b8c5d1;
+            font-size: 0.95rem;
+        }
+
+        .demo-info {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .demo-info h3 {
+            color: #d4af37;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .demo-credentials {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .credential {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: monospace;
+        }
+
+        .credential-label {
+            font-size: 0.85rem;
+            color: #8fbc8f;
+            margin-bottom: 0.25rem;
+        }
+
+        .credential-value {
+            font-size: 1rem;
+            color: white;
+        }
+
+        .instructions {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .instructions h3 {
+            color: #8fbc8f;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .instructions ol {
+            text-align: left;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .instructions li {
+            margin-bottom: 0.75rem;
+            color: #b8c5d1;
+            padding-left: 1rem;
+        }
+
+        .tech-stack {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .tech-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .footer {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-top: 3rem;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .logo-text {
+                font-size: 2rem;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            .tech-stack {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .pulse-glow {
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-glow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 0 30px rgba(212, 175, 55, 0.6);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="logo float">
+            <div class="logo-icon pulse-glow">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                        d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z" />
+                </svg>
+            </div>
+            <div class="logo-text">MU</div>
+        </div>
+
+        <h1>Microsistema de Pago y Facturación</h1>
+        <p class="subtitle">
+            Sistema completo de procesamiento de pagos con diseño moderno, validaciones avanzadas y facturación
+            electrónica.
+        </p>
+
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">🔒</div>
+                <h3>Pagos Seguros</h3>
+                <p>Validación con algoritmo de Luhn, encriptación SSL y protección contra fraude.</p>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">📊</div>
+                <h3>9 Reglas de Validación</h3>
+                <p>Sistema completo de autorización con múltiples capas de seguridad.</p>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">💳</div>
+                <h3>10 Tarjetas de Prueba</h3>
+                <p>Diferentes escenarios para probar todas las funcionalidades del sistema.</p>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">🎨</div>
+                <h3>Diseño Moderno</h3>
+                <p>Interfaz elegante con animaciones, previsualización de tarjetas y UX fluida.</p>
+            </div>
+        </div>
+
+        <div class="demo-info">
+            <h3>🚀 Credenciales de Demo</h3>
+            <p>Usa estas credenciales para acceder al sistema:</p>
+            <div class="demo-credentials">
+                <div class="credential">
+                    <div class="credential-label">Usuario</div>
+                    <div class="credential-value">demo</div>
+                </div>
+                <div class="credential">
+                    <div class="credential-label">Contraseña</div>
+                    <div class="credential-value">demo123</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="instructions">
+            <h3>📋 Instrucciones de Uso</h3>
+            <ol>
+                <li><strong>Inicia sesión</strong> con las credenciales de demo</li>
+                <li><strong>Explora el dashboard</strong> con estadísticas y transacciones</li>
+                <li><strong>Realiza un pago</strong> usando una tarjeta de prueba válida</li>
+                <li><strong>Consulta el historial</strong> y genera facturas</li>
+                <li><strong>Prueba diferentes escenarios</strong> con las tarjetas de prueba</li>
+            </ol>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="text-center">
+            <a href="/login"
+                class="inline-block bg-accent hover:bg-yellow-500 text-primary font-bold py-4 px-8 rounded-lg text-lg transition-all duration-300 transform hover:scale-105 shadow-xl">
+                <i class="fas fa-sign-in-alt mr-2"></i>Acceder al Sistema
+            </a>
+        </div>
+
+        <div class="tech-stack">
+            <div class="tech-item">
+                <span>🐍</span>
+                <span>Flask</span>
+            </div>
+            <div class="tech-item">
+                <span>🎨</span>
+                <span>Tailwind CSS</span>
+            </div>
+            <div class="tech-item">
+                <span>⚡</span>
+                <span>JavaScript ES6+</span>
+            </div>
+            <div class="tech-item">
+                <span>💾</span>
+                <span>SQLite</span>
+            </div>
+            <div class="tech-item">
+                <span>🎭</span>
+                <span>Anime.js</span>
+            </div>
+        </div>
+
+        <div class="footer">
+            <!-- <p>© 2024 PaySecure - Microsistema de Pagos y Facturación</p>
+            <p>Sistema educativo con fines de demostración</p> -->
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,14 @@
+[Unit]
+Description=MU Payment System Gunicorn Service
+After=network.target
+
+[Service]
+User=admin
+Group=www-data
+WorkingDirectory=/home/admin/MU
+Environment="PATH=/home/admin/MU/venv/bin"
+Environment="SECRET_KEY=CHANGE_THIS_IN_PRODUCTION"
+ExecStart=/home/admin/MU/venv/bin/gunicorn --config gunicorn_config.py app:app
+
+[Install]
+WantedBy=multi-user.target

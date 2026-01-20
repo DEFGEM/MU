@@ -1,0 +1,348 @@
+{% extends "base.html" %}
+
+{% block title %}Realizar Pago - MU{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<div class="bg-gradient-to-r from-primary to-charcoal text-white py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center">
+            <h1 class="text-3xl md:text-4xl font-serif font-bold mb-2">
+                <i class="fas fa-credit-card text-accent mr-3"></i>Realizar Pago
+            </h1>
+            <p class="text-gray-300">Procesa tu pago de forma segura y rápida</p>
+        </div>
+    </div>
+</div>
+
+<!-- Payment Form -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <!-- Payment Form -->
+        <div class="payment-form-container">
+            <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+                <div class="bg-gradient-to-r from-primary to-charcoal px-6 py-4">
+                    <h2 class="text-xl font-semibold text-white">
+                        <i class="fas fa-lock text-accent mr-2"></i>
+                        Información del Pago
+                    </h2>
+                </div>
+
+                <form id="payment-form" class="p-6 space-y-6">
+                    <!-- Personal Information -->
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-semibold text-primary border-b border-gray-200 pb-2">
+                            <i class="fas fa-user text-accent mr-2"></i>Datos Personales
+                        </h3>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="form-group">
+                                <label for="full_name" class="form-label">Nombre Completo *</label>
+                                <input type="text" id="full_name" name="full_name" required class="form-input"
+                                    placeholder="Juan Pérez García" aria-label="Nombre completo del titular">
+                                <div class="error-message" id="full_name-error"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="rfc" class="form-label">RFC *</label>
+                                <input type="text" id="rfc" name="rfc" required maxlength="13" class="form-input"
+                                    placeholder="ABC010101ABC">
+                                <div class="error-message" id="rfc-error"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card Information -->
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-semibold text-primary border-b border-gray-200 pb-2 mb-4">
+                            <i class="fas fa-credit-card text-accent mr-2"></i>Información de la Tarjeta
+                        </h3>
+
+                        <div class="form-group">
+                            <label for="card_number" class="form-label">Número de Tarjeta *</label>
+                            <div class="relative">
+                                <input type="text" id="card_number" name="card_number" required
+                                    class="form-input pl-11 pr-12" placeholder="1234 5678 9012 3456" maxlength="19"
+                                    aria-label="Número de tarjeta de crédito o débito">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-credit-card text-gray-400 text-sm" id="card-icon"></i>
+                                </div>
+                                <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                    <img id="card-type-icon" src="" alt="" class="h-6 w-auto hidden">
+                                </div>
+                            </div>
+                            <div class="error-message" id="card_number-error"></div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="form-group">
+                                <label for="expiry_date" class="form-label">Fecha de Expiración *</label>
+                                <div class="relative">
+                                    <input type="text" id="expiry_date" name="expiry_date" required
+                                        class="form-input pl-10" placeholder="MM/AA" maxlength="5">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-calendar text-gray-400 text-sm"></i>
+                                    </div>
+                                </div>
+                                <div class="error-message" id="expiry_date-error"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="cvv" class="form-label">CVV *</label>
+                                <div class="relative">
+                                    <input type="text" id="cvv" name="cvv" required class="form-input pl-10 pr-12"
+                                        placeholder="123" maxlength="4">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-lock text-gray-400 text-sm"></i>
+                                    </div>
+                                    <button type="button"
+                                        class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+                                        title="El CVV son los 3 dígitos al reverso de la tarjeta (4 para AMEX)">
+                                        <i class="fas fa-question-circle"></i>
+                                    </button>
+                                </div>
+                                <div class="error-message" id="cvv-error"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Amount -->
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-semibold text-primary border-b border-gray-200 pb-2">
+                            <i class="fas fa-dollar-sign text-accent mr-2"></i>Monto del Pago
+                        </h3>
+
+                        <div class="form-group">
+                            <label for="amount" class="form-label">Monto a Pagar *</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-500 font-medium">$</span>
+                                </div>
+                                <input type="number" id="amount" name="amount" required min="0.01" step="0.01"
+                                    class="form-input pl-8" placeholder="0.00"
+                                    aria-label="Monto a pagar en pesos mexicanos">
+                            </div>
+                            <div class="error-message" id="amount-error"></div>
+                            <div class="text-xs text-slate mt-1">
+                                Límite máximo: $10,000.00 MXN
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="pt-6 border-t border-gray-200">
+                        <button type="submit" id="submit-payment"
+                            class="w-full bg-accent hover:bg-yellow-500 text-primary font-semibold py-4 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed">
+                            <span class="flex items-center justify-center">
+                                <i class="fas fa-lock mr-2"></i>
+                                <span id="submit-text">Procesar Pago Seguro</span>
+                                <i class="fas fa-spinner fa-spin ml-2 hidden" id="loading-spinner"></i>
+                            </span>
+                        </button>
+
+                        <div class="mt-4 text-center">
+                            <div class="flex items-center justify-center space-x-4 text-xs text-slate">
+                                <div class="flex items-center">
+                                    <i class="fas fa-shield-alt text-green-600 mr-1"></i>
+                                    <span>Pago seguro SSL</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-lock text-green-600 mr-1"></i>
+                                    <span>Datos encriptados</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Card Preview & Payment Summary -->
+        <div class="space-y-6">
+            <!-- Card Preview -->
+            <div class="card-preview-container">
+                <div class="relative">
+                    <!-- Decorative glow effect -->
+                    <div
+                        class="absolute -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl blur opacity-25 animate-pulse">
+                    </div>
+
+                    <div class="card-preview relative" id="card-preview">
+                        <div class="card-front">
+                            <!-- Background pattern -->
+                            <div class="absolute inset-0 opacity-10">
+                                <div class="absolute top-0 right-0 w-32 h-32 bg-white rounded-full -mr-16 -mt-16"></div>
+                                <div class="absolute bottom-0 left-0 w-40 h-40 bg-white rounded-full -ml-20 -mb-20">
+                                </div>
+                            </div>
+
+                            <div class="relative z-10">
+                                <div class="card-header">
+                                    <div class="card-chip">
+                                        <i class="fas fa-microchip text-amber-900 text-xl"></i>
+                                    </div>
+                                    <div class="card-logo" id="preview-logo">
+                                        <i class="fas fa-credit-card text-white text-3xl drop-shadow-lg"></i>
+                                    </div>
+                                </div>
+
+                                <div class="card-body">
+                                    <div class="card-number" id="preview-number">
+                                        **** **** **** ****
+                                    </div>
+                                    <div class="card-info">
+                                        <div class="card-holder">
+                                            <div class="card-label">TITULAR DE LA TARJETA</div>
+                                            <div class="card-value" id="preview-name">NOMBRE COMPLETO</div>
+                                        </div>
+                                        <div class="card-expiry">
+                                            <div class="card-label">VÁLIDA HASTA</div>
+                                            <div class="card-value" id="preview-expiry">MM/AA</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Summary -->
+            <div
+                class="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
+                <div class="bg-gradient-to-r from-primary to-charcoal px-6 py-4">
+                    <h3 class="text-lg font-semibold text-white flex items-center">
+                        <i class="fas fa-file-invoice-dollar text-accent mr-2"></i>
+                        Resumen del Pago
+                    </h3>
+                </div>
+
+                <div class="p-6 space-y-4">
+                    <!-- Amount breakdown -->
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-shopping-cart text-gray-400 text-sm"></i>
+                                <span class="text-sm text-slate">Subtotal</span>
+                            </div>
+                            <span class="font-semibold text-charcoal" id="summary-subtotal">$0.00</span>
+                        </div>
+
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-percentage text-gray-400 text-sm"></i>
+                                <span class="text-sm text-slate">Comisión de servicio (2.9%)</span>
+                            </div>
+                            <span class="font-semibold text-charcoal" id="summary-fee">$0.00</span>
+                        </div>
+                    </div>
+
+                    <!-- Total -->
+                    <div
+                        class="bg-gradient-to-r from-accent/10 to-yellow-400/10 rounded-xl p-4 border border-accent/20">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="text-xs text-slate uppercase tracking-wide mb-1">Total a pagar</p>
+                                <p class="text-2xl font-bold text-primary" id="summary-total">$0.00</p>
+                            </div>
+                            <i class="fas fa-money-bill-wave text-accent text-3xl opacity-50"></i>
+                        </div>
+                    </div>
+
+                    <!-- Payment details -->
+                    <div class="space-y-2 pt-2">
+                        <div class="flex items-center space-x-2 text-xs text-slate">
+                            <i class="fas fa-check-circle text-green-600"></i>
+                            <span>Pago procesado de forma segura</span>
+                        </div>
+                        <div class="flex items-center space-x-2 text-xs text-slate">
+                            <i class="fas fa-shield-alt text-green-600"></i>
+                            <span>Datos protegidos con encriptación SSL</span>
+                        </div>
+                        <div class="flex items-center space-x-2 text-xs text-slate">
+                            <i class="fas fa-receipt text-green-600"></i>
+                            <span>Recibirás confirmación por email</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Info footer -->
+                <div class="bg-blue-50 px-6 py-4 border-t border-blue-100">
+                    <div class="flex items-start space-x-3">
+                        <i class="fas fa-info-circle text-blue-600 mt-0.5"></i>
+                        <div class="text-xs text-blue-800">
+                            <p class="font-semibold mb-1">Nota importante</p>
+                            <p>El cargo aparecerá en tu estado de cuenta como <strong>"MU*"</strong></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security Features -->
+            <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+                <h3 class="text-lg font-semibold text-primary mb-4">
+                    <i class="fas fa-shield-alt text-accent mr-2"></i>Seguridad
+                </h3>
+
+                <div class="space-y-3">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-lock text-green-600 text-sm"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-charcoal">Encriptación SSL 256-bit</p>
+                            <p class="text-xs text-slate">Tus datos están protegidos</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-certificate text-green-600 text-sm"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-charcoal">PCI DSS Compliant</p>
+                            <p class="text-xs text-slate">Estándares de seguridad bancarios</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-eye-slash text-green-600 text-sm"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-charcoal">Sin almacenamiento de datos</p>
+                            <p class="text-xs text-slate">No guardamos información sensible</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Success Modal -->
+<div id="success-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md mx-4 transform scale-95 transition-transform">
+        <div class="p-8 text-center">
+            <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-check text-green-600 text-3xl"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-primary mb-2">¡Pago Exitoso!</h3>
+            <p class="text-slate mb-6" id="success-message">Tu pago ha sido procesado correctamente.</p>
+            <div class="space-y-3">
+                <a href="{{ url_for('dashboard') }}" class="btn-primary w-full block">
+                    <i class="fas fa-home mr-2"></i>Ir al Dashboard
+                </a>
+                <button onclick="closeSuccessModal()" class="btn-secondary w-full">
+                    <i class="fas fa-times mr-2"></i>Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/payment.js') }}"></script>
+{% endblock %}

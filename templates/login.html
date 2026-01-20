@@ -1,0 +1,384 @@
+{% extends "base.html" %}
+
+{% block title %}Iniciar Sesión - MU{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div
+    class="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-primary via-charcoal to-primary overflow-hidden">
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 opacity-10">
+        <div class="absolute inset-0"
+            style="background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.15) 1px, transparent 0); background-size: 20px 20px;">
+        </div>
+    </div>
+
+    <!-- Floating Elements -->
+    <div class="absolute top-20 left-10 w-20 h-20 bg-accent rounded-full opacity-20 animate-pulse"></div>
+    <div class="absolute bottom-32 right-16 w-32 h-32 bg-secondary rounded-full opacity-10 animate-pulse"
+        style="animation-delay: 1s;"></div>
+    <div class="absolute top-1/2 left-1/4 w-16 h-16 bg-white rounded-full opacity-5 animate-ping"></div>
+
+    <!-- Login/Register Container -->
+    <div class="relative z-10 w-full max-w-md mx-4">
+        <div class="bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/20 overflow-hidden">
+            <!-- Header -->
+            <div class="bg-white/5 p-8 text-center">
+                <div class="flex items-center justify-center space-x-3 mb-4">
+                    <div class="w-12 h-12 bg-accent rounded-xl flex items-center justify-center">
+                        <i class="fas fa-credit-card text-primary text-xl"></i>
+                    </div>
+                    <h1 class="text-2xl font-serif font-bold text-white">MU</h1>
+                </div>
+                <p class="text-gray-300 text-sm">Microsistema de Pagos</p>
+            </div>
+
+            <!-- Tab Navigation -->
+            <div class="flex border-b border-white/10">
+                <button id="login-tab" class="flex-1 py-3 text-white font-medium border-b-2 border-accent bg-white/5">
+                    <i class="fas fa-sign-in-alt mr-2"></i>Iniciar Sesión
+                </button>
+                <button id="register-tab"
+                    class="flex-1 py-3 text-gray-400 font-medium border-b-2 border-transparent hover:text-white hover:bg-white/5 transition-all">
+                    <i class="fas fa-user-plus mr-2"></i>Registrarse
+                </button>
+            </div>
+
+            <!-- Login Form -->
+            <div id="login-form-container" class="p-8">
+                <form method="POST" action="{{ url_for('login') }}" class="space-y-6">
+                    <div class="form-group">
+                        <label for="login-username" class="form-label text-white">Usuario o Email</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-user text-gray-400"></i>
+                            </div>
+                            <input type="text" id="login-username" name="username" required
+                                class="form-input pl-10 bg-white/5 border-white/20 text-white placeholder-gray-400"
+                                placeholder="Ingresa tu usuario o email"
+                                value="{{ request.form.username|default('demo') }}">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="login-password" class="form-label text-white">Contraseña</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-lock text-gray-400"></i>
+                            </div>
+                            <input type="password" id="login-password" name="password" required
+                                class="form-input pl-10 pr-10 bg-white/5 border-white/20 text-white placeholder-gray-400"
+                                placeholder="Ingresa tu contraseña"
+                                value="{{ request.form.password|default('demo123') }}">
+                            <button type="button" id="toggle-login-password"
+                                class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                <i class="fas fa-eye text-gray-400 hover:text-white"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <label class="flex items-center">
+                            <input type="checkbox"
+                                class="rounded border-gray-300 text-accent focus:ring-accent bg-white/10">
+                            <span class="ml-2 text-sm text-gray-300">Recordarme</span>
+                        </label>
+                        <a href="#" class="text-sm text-accent hover:text-yellow-400 transition-colors">
+                            ¿Olvidaste tu contraseña?
+                        </a>
+                    </div>
+
+                    <button type="submit"
+                        class="w-full bg-accent hover:bg-yellow-500 text-primary font-semibold py-3 px-4 rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
+                        <i class="fas fa-sign-in-alt mr-2"></i>
+                        Iniciar Sesión
+                    </button>
+                </form>
+
+                <!-- Demo Credentials -->
+                <div class="mt-8 p-4 bg-white/5 rounded-lg border border-white/10">
+                    <h3 class="text-sm font-semibold text-gray-300 mb-3 text-center">Credenciales de Demo</h3>
+                    <div class="space-y-2 text-xs text-gray-400">
+                        <div class="flex justify-between">
+                            <span>Usuario:</span>
+                            <span class="text-accent font-mono">demo</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Contraseña:</span>
+                            <span class="text-accent font-mono">demo123</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Register Form -->
+            <div id="register-form-container" class="p-8 hidden">
+                <form method="POST" action="{{ url_for('register') }}" class="space-y-6" id="register-form">
+                    <div class="form-group">
+                        <label for="register-username" class="form-label text-white">Usuario *</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-user text-gray-400"></i>
+                            </div>
+                            <input type="text" id="register-username" name="username" required
+                                class="form-input pl-10 bg-white/5 border-white/20 text-white placeholder-gray-400"
+                                placeholder="Elige un nombre de usuario" minlength="3" maxlength="20">
+                        </div>
+                        <p class="text-xs text-gray-400 mt-1">Mínimo 3 caracteres, máximo 20</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="register-email" class="form-label text-white">Email *</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-envelope text-gray-400"></i>
+                            </div>
+                            <input type="email" id="register-email" name="email" required
+                                class="form-input pl-10 bg-white/5 border-white/20 text-white placeholder-gray-400"
+                                placeholder="tu@email.com">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="register-password" class="form-label text-white">Contraseña *</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-lock text-gray-400"></i>
+                            </div>
+                            <input type="password" id="register-password" name="password" required
+                                class="form-input pl-10 pr-10 bg-white/5 border-white/20 text-white placeholder-gray-400"
+                                placeholder="Mínimo 6 caracteres" minlength="6">
+                            <button type="button" id="toggle-register-password"
+                                class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                <i class="fas fa-eye text-gray-400 hover:text-white"></i>
+                            </button>
+                        </div>
+                        <div id="password-strength" class="mt-2 h-1 bg-white/10 rounded-full overflow-hidden">
+                            <div id="password-strength-bar" class="h-full transition-all duration-300"
+                                style="width: 0%"></div>
+                        </div>
+                        <p id="password-strength-text" class="text-xs text-gray-400 mt-1">Ingresa una contraseña</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="register-confirm-password" class="form-label text-white">Confirmar Contraseña
+                            *</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-lock text-gray-400"></i>
+                            </div>
+                            <input type="password" id="register-confirm-password" name="confirm_password" required
+                                class="form-input pl-10 pr-10 bg-white/5 border-white/20 text-white placeholder-gray-400"
+                                placeholder="Repite la contraseña">
+                            <button type="button" id="toggle-confirm-password"
+                                class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                <i class="fas fa-eye text-gray-400 hover:text-white"></i>
+                            </button>
+                        </div>
+                        <p id="password-match-text" class="text-xs text-gray-400 mt-1"></p>
+                    </div>
+
+                    <div class="flex items-start">
+                        <input type="checkbox" id="terms" required
+                            class="rounded border-gray-300 text-accent focus:ring-accent bg-white/10 mt-1">
+                        <label for="terms" class="ml-2 text-sm text-gray-300">
+                            Acepto los <a href="#" class="text-accent hover:text-yellow-400">términos y condiciones</a>
+                            y la <a href="#" class="text-accent hover:text-yellow-400">política de privacidad</a>
+                        </label>
+                    </div>
+
+                    <button type="submit"
+                        class="w-full bg-accent hover:bg-yellow-500 text-primary font-semibold py-3 px-4 rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
+                        <i class="fas fa-user-plus mr-2"></i>
+                        Crear Cuenta
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Back to Home -->
+        <div class="mt-6 text-center">
+            <a href="/" class="text-gray-400 hover:text-white text-sm transition-colors inline-flex items-center">
+                <i class="fas fa-arrow-left mr-2"></i>Volver al inicio
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tab switching
+    const loginTab = document.getElementById('login-tab');
+    const registerTab = document.getElementById('register-tab');
+    const loginFormContainer = document.getElementById('login-form-container');
+    const registerFormContainer = document.getElementById('register-form-container');
+
+    loginTab.addEventListener('click', () => {
+        loginTab.classList.add('border-accent', 'bg-white/5', 'text-white');
+        loginTab.classList.remove('border-transparent', 'text-gray-400');
+        registerTab.classList.remove('border-accent', 'bg-white/5', 'text-white');
+        registerTab.classList.add('border-transparent', 'text-gray-400');
+
+        loginFormContainer.classList.remove('hidden');
+        registerFormContainer.classList.add('hidden');
+    });
+
+    registerTab.addEventListener('click', () => {
+        registerTab.classList.add('border-accent', 'bg-white/5', 'text-white');
+        registerTab.classList.remove('border-transparent', 'text-gray-400');
+        loginTab.classList.remove('border-accent', 'bg-white/5', 'text-white');
+        loginTab.classList.add('border-transparent', 'text-gray-400');
+
+        registerFormContainer.classList.remove('hidden');
+        loginFormContainer.classList.add('hidden');
+    });
+
+    // Toggle password visibility - Login
+    document.getElementById('toggle-login-password').addEventListener('click', function () {
+        const passwordInput = document.getElementById('login-password');
+        const icon = this.querySelector('i');
+
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    });
+
+    // Toggle password visibility - Register
+    document.getElementById('toggle-register-password').addEventListener('click', function () {
+        const passwordInput = document.getElementById('register-password');
+        const icon = this.querySelector('i');
+
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    });
+
+    // Toggle confirm password visibility
+    document.getElementById('toggle-confirm-password').addEventListener('click', function () {
+        const passwordInput = document.getElementById('register-confirm-password');
+        const icon = this.querySelector('i');
+
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    });
+
+    // Password strength indicator
+    const registerPassword = document.getElementById('register-password');
+    const strengthBar = document.getElementById('password-strength-bar');
+    const strengthText = document.getElementById('password-strength-text');
+
+    registerPassword.addEventListener('input', function () {
+        const password = this.value;
+        let strength = 0;
+        let color = '';
+        let text = '';
+
+        if (password.length >= 6) strength++;
+        if (password.length >= 10) strength++;
+        if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+        if (/\d/.test(password)) strength++;
+        if (/[^a-zA-Z\d]/.test(password)) strength++;
+
+        const percentage = (strength / 5) * 100;
+
+        if (strength <= 2) {
+            color = '#ef4444';
+            text = 'Débil';
+        } else if (strength <= 3) {
+            color = '#f59e0b';
+            text = 'Media';
+        } else {
+            color = '#10b981';
+            text = 'Fuerte';
+        }
+
+        strengthBar.style.width = percentage + '%';
+        strengthBar.style.backgroundColor = color;
+        strengthText.textContent = password.length > 0 ? `Seguridad: ${text}` : 'Ingresa una contraseña';
+        strengthText.style.color = color;
+    });
+
+    // Password match validation
+    const confirmPassword = document.getElementById('register-confirm-password');
+    const matchText = document.getElementById('password-match-text');
+
+    function validatePasswordMatch() {
+        if (confirmPassword.value.length > 0) {
+            if (registerPassword.value === confirmPassword.value) {
+                matchText.textContent = '✓ Las contraseñas coinciden';
+                matchText.style.color = '#10b981';
+                confirmPassword.classList.remove('border-red-500');
+                confirmPassword.classList.add('border-green-500');
+            } else {
+                matchText.textContent = '✗ Las contraseñas no coinciden';
+                matchText.style.color = '#ef4444';
+                confirmPassword.classList.remove('border-green-500');
+                confirmPassword.classList.add('border-red-500');
+            }
+        } else {
+            matchText.textContent = '';
+            confirmPassword.classList.remove('border-red-500', 'border-green-500');
+        }
+    }
+
+    registerPassword.addEventListener('input', validatePasswordMatch);
+    confirmPassword.addEventListener('input', validatePasswordMatch);
+
+    // Form validation
+    document.getElementById('register-form').addEventListener('submit', function (e) {
+        if (registerPassword.value !== confirmPassword.value) {
+            e.preventDefault();
+            alert('Las contraseñas no coinciden');
+            return false;
+        }
+    });
+
+    // Form animation
+    anime({
+        targets: '.bg-white\\/10',
+        scale: [0.9, 1],
+        opacity: [0, 1],
+        duration: 800,
+        easing: 'easeOutElastic(1, .8)',
+        delay: 200
+    });
+
+    // Floating animation for decorative elements
+    anime({
+        targets: '.absolute.top-20',
+        translateY: [-10, 10],
+        duration: 3000,
+        direction: 'alternate',
+        loop: true,
+        easing: 'easeInOutSine'
+    });
+
+    anime({
+        targets: '.absolute.bottom-32',
+        translateY: [10, -10],
+        duration: 4000,
+        direction: 'alternate',
+        loop: true,
+        easing: 'easeInOutSine',
+        delay: 500
+    });
+</script>
+{% endblock %}

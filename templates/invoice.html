@@ -1,0 +1,378 @@
+{% extends "base.html" %}
+
+{% block title %}Factura - MU{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<div class="bg-gradient-to-r from-primary to-charcoal text-white py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center">
+            <h1 class="text-2xl md:text-3xl font-serif font-bold mb-2">
+                <i class="fas fa-file-invoice text-accent mr-3"></i>Factura de Pago
+            </h1>
+            <p class="text-gray-300">Comprobante de transacción autorizada</p>
+        </div>
+    </div>
+</div>
+
+<!-- Invoice Content -->
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden" id="invoice-content">
+        <!-- Invoice Header -->
+        <div class="px-8 py-6 bg-gradient-to-r from-primary to-charcoal text-white">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 bg-accent rounded-xl flex items-center justify-center">
+                        <i class="fas fa-credit-card text-primary text-xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-serif font-bold">MU</h2>
+                        <p class="text-gray-300 text-sm">Microsistema de Pagos y Facturación</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <h3 class="text-xl font-bold">FACTURA</h3>
+                    <p class="text-accent font-mono text-lg">{{ transaction[9]|default('N/A') }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Invoice Details -->
+        <div class="p-8">
+            <!-- Company and Customer Info -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <!-- Company Info -->
+                <div>
+                    <h4 class="text-lg font-semibold text-primary mb-4">Emisor</h4>
+                    <div class="space-y-2 text-sm">
+                        <p class="font-medium text-charcoal">MU S.A. de C.V.</p>
+                        <p class="text-slate">Av. Tecnología #123, Col. Digital</p>
+                        <p class="text-slate">Ciudad de México, CDMX 06600</p>
+                        <p class="text-slate">RFC: PSE123456ABC</p>
+                        <p class="text-slate">Tel: +52 55 1234 5678</p>
+                        <p class="text-slate">Email: facturacion@mu.com</p>
+                    </div>
+                </div>
+
+                <!-- Customer Info -->
+                <div>
+                    <h4 class="text-lg font-semibold text-primary mb-4">Receptor</h4>
+                    <div class="space-y-2 text-sm">
+                        <p class="font-medium text-charcoal">{{ transaction[7]|default('Nombre no proporcionado') }}</p>
+                        <p class="text-slate">RFC: {{ transaction[6]|default('N/A') }}</p>
+                        <p class="text-slate">Fecha de emisión: {{ transaction[4][:10] }}</p>
+                        <p class="text-slate">Hora: {{ transaction[4][11:19] }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transaction Details -->
+            <div class="bg-gray-50 rounded-lg p-6 mb-8">
+                <h4 class="text-lg font-semibold text-primary mb-4">Detalles de la Transacción</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span class="text-slate">ID de Transacción:</span>
+                            <span class="font-mono text-charcoal">TXN-{{ transaction[0] }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate">Monto del Pago:</span>
+                            <span class="font-semibold text-primary">${{ "%.2f"|format(transaction[1]) }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate">Comisión (2.9%):</span>
+                            <span class="text-slate">${{ "%.2f"|format(transaction[1] * 0.029) }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate">Total:</span>
+                            <span class="font-bold text-primary">${{ "%.2f"|format(transaction[1] * 1.029) }}</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span class="text-slate">Método de Pago:</span>
+                            <span class="text-charcoal">Tarjeta de Crédito/Débito</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate">Tarjeta:</span>
+                            <span class="font-mono text-charcoal">
+                                **** **** **** {{ transaction[10][-4:] if transaction[10] else 'N/A' }}
+                            </span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate">Titular:</span>
+                            <span class="text-charcoal">
+                                {% if transaction[11] %}
+                                {{ transaction[11] }}
+                                {% else %}
+                                <span class="italic text-slate">No registrado</span>
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate">Estado:</span>
+                            <span class="font-medium">
+                                {% if transaction[2] == 'autorizado' %}
+                                <span class="text-green-600">
+                                    <i class="fas fa-check-circle mr-1"></i>Autorizado
+                                </span>
+                                {% else %}
+                                <span class="text-red-600">
+                                    <i class="fas fa-times-circle mr-1"></i>Rechazado
+                                </span>
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Info -->
+            <div class="border-t border-gray-200 pt-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h5 class="font-semibold text-primary mb-2">Forma de Pago</h5>
+                        <p class="text-sm text-slate">01 - Efectivo (Tarjeta)</p>
+                        <p class="text-sm text-slate">Único pago</p>
+                    </div>
+
+                    <div>
+                        <h5 class="font-semibold text-primary mb-2">Uso de CFDI</h5>
+                        <p class="text-sm text-slate">P01 - Por definir</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- QR Code Placeholder -->
+            <div class="mt-8 p-6 bg-blue-50 rounded-lg">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h5 class="font-semibold text-primary mb-2">Código QR</h5>
+                        <p class="text-sm text-slate mb-3">Escanea este código para verificar la autenticidad de la
+                            factura</p>
+                        <div class="text-xs text-slate">
+                            <p><strong>Sello Digital:</strong> XXX1234567890</p>
+                            <p><strong>Cadena Original:</strong> ||1.0|PSE123456ABC|...</p>
+                        </div>
+                    </div>
+                    <div
+                        class="w-24 h-24 bg-white rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300">
+                        <i class="fas fa-qrcode text-4xl text-gray-400"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Invoice Footer -->
+        <div class="px-8 py-4 bg-gray-50 border-t border-gray-200 text-center">
+            <p class="text-xs text-slate">
+                Esta factura es un comprobante de pago generado por MU.
+                Para dudas o aclaraciones, contacte a facturacion@mu.com
+            </p>
+            <p class="text-xs text-slate mt-1">
+                Documento generado el {{ transaction[4][:19] if transaction[4] else 'N/A' }} - MU S.A. de C.V.
+            </p>
+            <p class="text-xs text-slate mt-1 font-mono">
+                UUID: {{ transaction[0] }}-{{ transaction[9]|default('N/A') }}
+            </p>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex flex-col sm:flex-row gap-4 mt-8">
+        <button onclick="window.print()" class="btn-primary flex-1">
+            <i class="fas fa-print mr-2"></i>Imprimir Factura
+        </button>
+        <button onclick="downloadPDF()" class="btn-secondary flex-1">
+            <i class="fas fa-download mr-2"></i>Descargar PDF
+        </button>
+        <button onclick="emailInvoice()" class="btn-accent flex-1">
+            <i class="fas fa-envelope mr-2"></i>Enviar por Email
+        </button>
+        <a href="{{ url_for('history') }}" class="btn-secondary flex-1 text-center">
+            <i class="fas fa-history mr-2"></i>Ver Historial
+        </a>
+    </div>
+</div>
+
+<!-- Email Modal -->
+<div id="email-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md mx-4 transform scale-95 transition-transform">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h3 class="text-xl font-semibold text-primary">
+                <i class="fas fa-envelope text-accent mr-2"></i>Enviar Factura por Email
+            </h3>
+        </div>
+
+        <div class="p-6">
+            <p class="text-slate mb-4">Ingresa el email donde deseas recibir la factura:</p>
+            <div class="form-group">
+                <label for="email-input" class="form-label">Correo Electrónico</label>
+                <input type="email" id="email-input" class="form-input" placeholder="ejemplo@correo.com"
+                    value="{{ session.email }}">
+            </div>
+        </div>
+
+        <div class="px-6 py-4 border-t border-gray-200 flex justify-end space-x-3">
+            <button onclick="closeEmailModal()" class="btn-secondary">
+                <i class="fas fa-times mr-2"></i>Cancelar
+            </button>
+            <button onclick="sendEmail()" class="btn-primary" id="send-email-btn">
+                <i class="fas fa-paper-plane mr-2"></i>Enviar
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    const transactionId = {{ transaction[0]| tojson }};
+
+    // Email invoice modal functions
+    function emailInvoice() {
+        const modal = document.getElementById('email-modal');
+        modal.classList.remove('hidden');
+
+        // Animate modal
+        anime({
+            targets: modal.querySelector('.bg-white'),
+            scale: [0.9, 1],
+            opacity: [0, 1],
+            duration: 300,
+            easing: 'easeOutExpo'
+        });
+    }
+
+    function closeEmailModal() {
+        const modal = document.getElementById('email-modal');
+        modal.classList.add('hidden');
+    }
+
+    async function sendEmail() {
+        const emailInput = document.getElementById('email-input');
+        const email = emailInput.value.trim();
+
+        if (!email) {
+            alert('Por favor ingresa un email válido');
+            return;
+        }
+
+        const button = document.getElementById('send-email-btn');
+        const originalText = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Enviando...';
+        button.disabled = true;
+
+        try {
+            const response = await fetch(`/api/invoice/${transactionId}/email`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email: email })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                alert(`✓ Factura enviada exitosamente a ${email}`);
+                closeEmailModal();
+            } else {
+                alert(`✗ Error: ${data.error || 'No se pudo enviar el email'}`);
+            }
+        } catch (error) {
+            alert('✗ Error al enviar el email. Por favor intenta de nuevo.');
+        } finally {
+            button.innerHTML = originalText;
+            button.disabled = false;
+        }
+    }
+
+    // Download PDF function
+    async function downloadPDF() {
+        const button = event.target.closest('button');
+        const originalText = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Generando PDF...';
+        button.disabled = true;
+
+        try {
+            // Descargar PDF desde el servidor
+            const response = await fetch(`/api/invoice/${transactionId}/download`);
+
+            if (response.ok) {
+                // Convertir la respuesta a blob
+                const blob = await response.blob();
+
+                // Crear un enlace temporal para descargar
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'factura-{{ transaction[9]|default("mu") }}.pdf';
+                document.body.appendChild(a);
+                a.click();
+
+                // Limpiar
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+
+                // Mostrar mensaje de éxito
+                alert('✓ PDF descargado exitosamente');
+            } else {
+                const error = await response.json();
+                alert(`✗ Error: ${error.error || 'No se pudo generar el PDF'}`);
+            }
+        } catch (error) {
+            alert('✗ Error al descargar el PDF. Por favor intenta de nuevo.');
+            console.error('Error:', error);
+        } finally {
+            button.innerHTML = originalText;
+            button.disabled = false;
+        }
+    }
+
+    // Print styles
+    const printStyles = `
+    @media print {
+        body * {
+            visibility: hidden;
+        }
+        #invoice-content, #invoice-content * {
+            visibility: visible;
+        }
+        #invoice-content {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            margin: 0;
+            padding: 20px;
+            box-shadow: none;
+        }
+        .btn-primary, .btn-secondary, .btn-accent {
+            display: none !important;
+        }
+    }
+`;
+
+    // Add print styles to document
+    const styleSheet = document.createElement('style');
+    styleSheet.textContent = printStyles;
+    document.head.appendChild(styleSheet);
+
+    // Animate invoice on load
+    anime({
+        targets: '#invoice-content',
+        translateY: [50, 0],
+        opacity: [0, 1],
+        duration: 800,
+        easing: 'easeOutExpo'
+    });
+
+    // Close modal on escape key
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            closeEmailModal();
+        }
+    });
+</script>
+{% endblock %}

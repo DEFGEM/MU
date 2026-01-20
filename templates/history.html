@@ -1,0 +1,454 @@
+{% extends "base.html" %}
+
+{% block title %}Historial de Transacciones - MU{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<div class="bg-gradient-to-r from-primary to-charcoal text-white py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center">
+            <h1 class="text-3xl md:text-4xl font-serif font-bold mb-2">
+                <i class="fas fa-history text-accent mr-3"></i>Historial de Transacciones
+            </h1>
+            <p class="text-gray-300">Consulta el detalle de todas tus operaciones</p>
+        </div>
+    </div>
+</div>
+
+<!-- Filters and Search -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <!-- Search -->
+            <div class="form-group">
+                <label for="search" class="form-label">Buscar</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-search text-gray-400"></i>
+                    </div>
+                    <input type="text" id="search" class="form-input pl-10" placeholder="Folio, monto, tarjeta...">
+                </div>
+            </div>
+
+            <!-- Status Filter -->
+            <div class="form-group">
+                <label for="status-filter" class="form-label">Estado</label>
+                <select id="status-filter" class="form-input">
+                    <option value="">Todos</option>
+                    <option value="autorizado">Autorizado</option>
+                    <option value="rechazado">Rechazado</option>
+                </select>
+            </div>
+
+            <!-- Date From -->
+            <div class="form-group">
+                <label for="date-from" class="form-label">Desde</label>
+                <input type="date" id="date-from" class="form-input">
+            </div>
+
+            <!-- Date To -->
+            <div class="form-group">
+                <label for="date-to" class="form-label">Hasta</label>
+                <input type="date" id="date-to" class="form-input">
+            </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-3 mt-6">
+            <button id="apply-filters" class="btn-primary">
+                <i class="fas fa-filter mr-2"></i>Aplicar Filtros
+            </button>
+            <button id="clear-filters" class="btn-secondary">
+                <i class="fas fa-times mr-2"></i>Limpiar
+            </button>
+            <button id="export-pdf" class="btn-accent ml-auto">
+                <i class="fas fa-file-pdf mr-2"></i>Exportar PDF
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Transactions Table -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+    <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <div class="flex items-center justify-between">
+                <h2 class="text-xl font-semibold text-primary">
+                    <i class="fas fa-list text-accent mr-2"></i>
+                    Transacciones
+                </h2>
+                <div class="text-sm text-slate">
+                    <span id="results-count">{{ transactions|length }}</span> transacciones encontradas
+                </div>
+            </div>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-slate uppercase tracking-wider">
+                            <i class="fas fa-hashtag mr-1"></i>Folio
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-slate uppercase tracking-wider">
+                            <i class="fas fa-dollar-sign mr-1"></i>Monto
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-slate uppercase tracking-wider">
+                            <i class="fas fa-credit-card mr-1"></i>Tarjeta
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-slate uppercase tracking-wider">
+                            <i class="fas fa-id-card mr-1"></i>RFC
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-slate uppercase tracking-wider">
+                            <i class="fas fa-info-circle mr-1"></i>Estado
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-slate uppercase tracking-wider">
+                            <i class="fas fa-calendar mr-1"></i>Fecha
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-slate uppercase tracking-wider">
+                            <i class="fas fa-cogs mr-1"></i>Acciones
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200" id="transactions-table">
+                    {% for transaction in transactions %}
+                    <tr class="transaction-row hover:bg-gray-50 transition-colors" data-status="{{ transaction[2] }}">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-mono font-medium text-charcoal">
+                                {{ transaction[9]|default('N/A') }}
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-lg font-bold text-primary">
+                                ${{ "%.2f"|format(transaction[1]) }}
+                            </div>
+                            <div class="text-xs text-slate">
+                                {% if transaction[2] == 'autorizado' %}
+                                +${{ "%.2f"|format(transaction[1] * 0.029) }} comisión
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="text-sm text-charcoal font-medium">
+                                {% if transaction[11] %}
+                                {{ transaction[11][:25] }}{% if transaction[11]|length > 25 %}...{% endif %}
+                                {% else %}
+                                <span class="text-slate italic">No registrada</span>
+                                {% endif %}
+                            </div>
+                            <div class="text-xs text-slate font-mono">
+                                **** **** **** {{ transaction[10][-4:] if transaction[10] else 'N/A' }}
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-mono text-charcoal">
+                                {{ transaction[6]|default('N/A') }}
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {% if transaction[2] == 'autorizado' %}
+                            <span class="status-badge status-success">
+                                <i class="fas fa-check-circle mr-1"></i>Autorizado
+                            </span>
+                            {% else %}
+                            <span class="status-badge status-error" title="{{ transaction[3] }}">
+                                <i class="fas fa-times-circle mr-1"></i>Rechazado
+                            </span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-charcoal">
+                                {{ transaction[4][:10] }}
+                            </div>
+                            <div class="text-xs text-slate">
+                                {{ transaction[4][11:19] }}
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <div class="flex items-center space-x-2">
+                                <a href="{{ url_for('invoice', transaction_id=transaction[0]) }}"
+                                    class="text-accent hover:text-yellow-500 font-medium transition-colors"
+                                    data-tooltip="Ver factura">
+                                    <i class="fas fa-file-invoice"></i>
+                                </a>
+                                {% if transaction[2] == 'autorizado' %}
+                                <button class="text-blue-600 hover:text-blue-800 transition-colors"
+                                    onclick="downloadReceipt('{{ transaction[9] }}')" data-tooltip="Descargar recibo">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                                {% endif %}
+                                <button class="text-gray-600 hover:text-gray-800 transition-colors"
+                                    onclick="showTransactionDetails({{ transaction[0] }})" data-tooltip="Ver detalles">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="px-6 py-12 text-center">
+                            <div class="text-slate">
+                                <i class="fas fa-inbox text-4xl mb-4 opacity-50"></i>
+                                <p class="text-lg font-medium mb-2">No se encontraron transacciones</p>
+                                <p class="text-sm">Realiza tu primer pago para comenzar a registrar transacciones</p>
+                                <a href="{{ url_for('payment') }}" class="btn-primary mt-4 inline-block">
+                                    <i class="fas fa-credit-card mr-2"></i>Realizar Pago
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        {% if transactions %}
+        <div class="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+            <div class="text-sm text-slate">
+                Mostrando 1 a {{ transactions|length }} de {{ transactions|length }} resultados
+            </div>
+            <div class="flex space-x-2">
+                <button class="px-3 py-1 text-sm border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
+                    disabled>
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="px-3 py-1 text-sm bg-primary text-white rounded-md">1</button>
+                <button class="px-3 py-1 text-sm border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
+                    disabled>
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Transaction Details Modal -->
+<div id="details-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-lg mx-4 transform scale-95 transition-transform">
+        <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+            <h3 class="text-xl font-semibold text-primary">
+                <i class="fas fa-info-circle text-accent mr-2"></i>Detalles de Transacción
+            </h3>
+            <button onclick="closeDetailsModal()" class="text-gray-400 hover:text-gray-600">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+
+        <div class="p-6" id="details-content">
+            <!-- Content will be loaded here -->
+        </div>
+
+        <div class="px-6 py-4 border-t border-gray-200 flex justify-end space-x-3">
+            <button onclick="closeDetailsModal()" class="btn-secondary">
+                <i class="fas fa-times mr-2"></i>Cerrar
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Filter functionality
+    document.getElementById('apply-filters').addEventListener('click', function () {
+        const search = document.getElementById('search').value.toLowerCase();
+        const status = document.getElementById('status-filter').value;
+        const dateFrom = document.getElementById('date-from').value;
+        const dateTo = document.getElementById('date-to').value;
+
+        const rows = document.querySelectorAll('.transaction-row');
+        let visibleCount = 0;
+
+        rows.forEach(row => {
+            let show = true;
+
+            // Search filter - buscar en todo el texto de la fila
+            if (search) {
+                const text = row.textContent.toLowerCase();
+                if (!text.includes(search)) {
+                    show = false;
+                }
+            }
+
+            // Status filter - usar el data-status attribute
+            if (status) {
+                const rowStatus = row.getAttribute('data-status');
+                if (rowStatus !== status) {
+                    show = false;
+                }
+            }
+
+            // Date filters - extraer la fecha del div interno
+            if (dateFrom || dateTo) {
+                const dateCell = row.cells[5];
+                if (dateCell) {
+                    const dateDiv = dateCell.querySelector('div');
+                    if (dateDiv) {
+                        const rowDate = dateDiv.textContent.trim();
+
+                        if (dateFrom && rowDate < dateFrom) {
+                            show = false;
+                        }
+                        if (dateTo && rowDate > dateTo) {
+                            show = false;
+                        }
+                    }
+                }
+            }
+
+            row.style.display = show ? '' : 'none';
+            if (show) visibleCount++;
+        });
+
+        document.getElementById('results-count').textContent = visibleCount;
+    });
+
+    // Clear filters
+    document.getElementById('clear-filters').addEventListener('click', function () {
+        document.getElementById('search').value = '';
+        document.getElementById('status-filter').value = '';
+        document.getElementById('date-from').value = '';
+        document.getElementById('date-to').value = '';
+
+        document.getElementById('apply-filters').click();
+    });
+
+    // Show transaction details
+    function showTransactionDetails(transactionId) {
+        // This would typically fetch data from the server
+        const modal = document.getElementById('details-modal');
+        const content = document.getElementById('details-content');
+
+        content.innerHTML = `
+        <div class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-slate">ID de Transacción</label>
+                    <p class="text-charcoal font-mono">TXN-${transactionId}</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate">Fecha</label>
+                    <p class="text-charcoal">2024-01-15 14:30:25</p>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-slate">Monto</label>
+                    <p class="text-primary font-bold text-lg">$1,250.00</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate">Comisión</label>
+                    <p class="text-slate">$36.25 (2.9%)</p>
+                </div>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-slate">Tarjeta</label>
+                <p class="text-charcoal">**** **** **** 1234</p>
+                <p class="text-slate text-sm">Juan Pérez García</p>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-slate">RFC</label>
+                <p class="text-charcoal font-mono">ABC010101ABC</p>
+            </div>
+            
+            <div class="bg-green-50 p-4 rounded-lg">
+                <div class="flex items-center">
+                    <i class="fas fa-check-circle text-green-600 mr-2"></i>
+                    <span class="text-green-800 font-medium">Transacción Autorizada</span>
+                </div>
+            </div>
+        </div>
+    `;
+
+        modal.classList.remove('hidden');
+
+        // Animate modal
+        anime({
+            targets: modal.querySelector('.bg-white'),
+            scale: [0.9, 1],
+            opacity: [0, 1],
+            duration: 300,
+            easing: 'easeOutExpo'
+        });
+    }
+
+    // Close details modal
+    function closeDetailsModal() {
+        const modal = document.getElementById('details-modal');
+        modal.classList.add('hidden');
+    }
+
+    // Download receipt
+    async function downloadReceipt(invoiceNumber) {
+        try {
+            // Encontrar el transaction_id de la fila que tiene ese invoice_number
+            const rows = document.querySelectorAll('.transaction-row');
+            let transactionId = null;
+
+            for (const row of rows) {
+                const folio = row.cells[0].textContent.trim();
+                if (folio === invoiceNumber) {
+                    // Extraer transaction_id del botón de detalles
+                    const detailsBtn = row.querySelector('[onclick*="showTransactionDetails"]');
+                    if (detailsBtn) {
+                        const onclickAttr = detailsBtn.getAttribute('onclick');
+                        const match = onclickAttr.match(/showTransactionDetails\((\d+)\)/);
+                        if (match) {
+                            transactionId = match[1];
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (!transactionId) {
+                alert('❌ No se pudo encontrar el ID de la transacción');
+                return;
+            }
+
+            // Descargar PDF desde el servidor
+            const response = await fetch(`/api/invoice/${transactionId}/download`);
+
+            if (response.ok) {
+                // Convertir la respuesta a blob
+                const blob = await response.blob();
+
+                // Crear un enlace temporal para descargar
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `factura-${invoiceNumber}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+
+                // Limpiar
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            } else {
+                const error = await response.json();
+                alert(`❌ Error: ${error.error || 'No se pudo generar el PDF'}`);
+            }
+        } catch (error) {
+            alert('❌ Error al descargar el recibo. Por favor intenta de nuevo.');
+            console.error('Error:', error);
+        }
+    }
+
+    // Export to PDF
+    document.getElementById('export-pdf').addEventListener('click', function () {
+        alert('Exportando historial a PDF...');
+    });
+
+    // Animate table rows on load
+    anime({
+        targets: '.transaction-row',
+        translateY: [20, 0],
+        opacity: [0, 1],
+        duration: 600,
+        delay: anime.stagger(50),
+        easing: 'easeOutExpo'
+    });
+</script>
+{% endblock %}
